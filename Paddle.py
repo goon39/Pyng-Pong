@@ -22,8 +22,8 @@ class Paddle(object):
         self.score = 0
 
 
-    def draw(self):
-        return None
+    def draw(self, screen):
+        pygame.draw.rect(screen, WHITE, [self.x, self.y, self.w, self.h])
 
 
     def update(self, dt):

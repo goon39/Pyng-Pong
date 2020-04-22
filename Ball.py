@@ -22,10 +22,11 @@ class Ball(object):
         self.h = h
         self.dx = 0
         self.dy = 0
+        self.last_pos = ()
 
 
-    def draw(self):
-        return None
+    def draw(self, screen):
+        pygame.draw.rect(screen, WHITE, [self.x, self.y, self.w, self.h])
 
 
     def update(self, dt):
