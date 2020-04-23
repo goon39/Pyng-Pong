@@ -24,7 +24,7 @@ SW = SCREEN_WIDTH / 2
 SCREEN_HEIGHT = pd.current_h - 100
 SH = SCREEN_HEIGHT / 2
 
-type_font = pygame.font.SysFont(None, 24)
+type_font = pygame.font.SysFont(None, 48)
 score_font = pygame.font.SysFont(None, 120)
 
 #TODO: Add sound during movement
@@ -75,11 +75,29 @@ def main():
         c_scoreRect.centerx = 0.75 * SCREEN_WIDTH
         c_scoreRect.centery = 36
         screen.blit(c_scoreSurf, c_scoreRect)
-        
-        pygame.display.update()
 
-     #   if state == 'start':
+        if state == 'start':
+            startSurf, startRect = text_objects('Press ENTER to start', type_font, WHITE)
+            startRect.centerx = SW
+            startRect.centery = 52
+            screen.blit(startSurf, startRect)
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    state = 'serve'
+        elif state == 'serve':
+            if ball.last_score not in [0, 1]:
+                direction = random.choice([-1, 1])
+            elif ball.last_score == 0:
+                direction = 1
+            else:
+                direction = -1
+            ball.serve(direction)
+            state = 'play'
+        elif state == 'play':
             
+                        
+        pygame.display.update()
+        clock.tick(60)
 
 
 if __name__ == "__main__":

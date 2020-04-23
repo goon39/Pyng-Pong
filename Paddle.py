@@ -17,7 +17,7 @@ class Paddle(object):
         self.y = y
         self.w = w
         self.h = h
-        self.dy = 0
+        self.dy = 6
         self.dt = 0
         self.score = 0
 

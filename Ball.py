@@ -22,7 +22,9 @@ class Ball(object):
         self.h = h
         self.dx = 0
         self.dy = 0
+        self.v = 3
         self.last_pos = ()
+        self.last_score = -1
 
 
     def draw(self, screen):
@@ -49,9 +51,11 @@ class Ball(object):
     def score(self, screen_width, paddle1, paddle2):
         if self.x <= 0:
             paddle1.score_update()
+            self.last_score = 0
             return True
         elif self.x + self.w >= screen_width:
             paddle2.score_update()
+            self.last_score = 1
             return True
         else:
             return False
@@ -59,4 +63,7 @@ class Ball(object):
 
     def serve(self, direction):
         # serve ball at random angle
+        angle = random.randrange(-45, 45)
+        self.dx = direction * self.v * math.cos(math.radians(angle))
+        self.dy = direction * self.v * math.sin(math.radians(angle))
         return None
