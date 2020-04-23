@@ -24,6 +24,9 @@ SW = SCREEN_WIDTH / 2
 SCREEN_HEIGHT = pd.current_h - 100
 SH = SCREEN_HEIGHT / 2
 
+type_font = pygame.font.SysFont(None, 24)
+score_font = pygame.font.SysFont(None, 120)
+
 #TODO: Add sound during movement
 pygame.mixer.init()
 
@@ -32,13 +35,14 @@ clock = pygame.time.Clock()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 #screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)  # TODO: Resizable window
 
-def text_objects(text, font_obj, color):
-    textSurf = font_obj.render(text, True, color)
+def text_objects(text, font_obj, color, antialias=True):
+    textSurf = font_obj.render(text, antialias, color)
     return textSurf, textSurf.get_rect()
 
 
 def main():
 
+    state = 'start'
     running = True
     while running:
         for event in pygame.event.get():
@@ -61,7 +65,21 @@ def main():
         player.draw(screen)
         computer.draw(screen)
         ball.draw(screen)
+
+        p_scoreSurf, p_scoreRect = text_objects(str(player.score), score_font, WHITE)
+        p_scoreRect.centerx = SW / 2
+        p_scoreRect.centery = 36
+        screen.blit(p_scoreSurf, p_scoreRect)
+
+        c_scoreSurf, c_scoreRect = text_objects(str(computer.score), score_font, WHITE)
+        c_scoreRect.centerx = 0.75 * SCREEN_WIDTH
+        c_scoreRect.centery = 36
+        screen.blit(c_scoreSurf, c_scoreRect)
+        
         pygame.display.update()
+
+     #   if state == 'start':
+            
 
 
 if __name__ == "__main__":
