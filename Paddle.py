@@ -18,16 +18,18 @@ class Paddle(object):
         self.w = w
         self.h = h
         self.dy = 6
-        self.dt = 0
         self.score = 0
+        self.rect = 0
 
 
     def draw(self, screen):
-        pygame.draw.rect(screen, WHITE, [self.x, self.y, self.w, self.h])
+        self.rect = pygame.draw.rect(screen, WHITE, [self.x, self.y, self.w, self.h])
+        return self.rect
 
 
-    def update(self, dt):
-        return None
+    def update(self, direction, screen_height):
+        self.y += direction * self.dy
+        self.bound(screen_height)
 
 
     def score_update(self):

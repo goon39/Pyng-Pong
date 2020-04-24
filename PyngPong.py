@@ -42,6 +42,10 @@ def text_objects(text, font_obj, color, antialias=True):
 
 def main():
 
+    player = Paddle(20, SH - 18, 6, 36)
+    computer = Paddle(SCREEN_WIDTH - 20, SH - 18, 6, 36)
+    ball = Ball(SW, SH, 6, 6)
+    
     state = 'start'
     running = True
     while running:
@@ -58,13 +62,9 @@ def main():
 
         screen.fill(BLACK)
 
-        player = Paddle(20, SH - 18, 6, 36)
-        computer = Paddle(SCREEN_WIDTH - 20, SH - 18, 6, 36)
-        ball = Ball(SW, SH, 6, 6)
-
-        player.draw(screen)
-        computer.draw(screen)
-        ball.draw(screen)
+        playerRect = player.draw(screen)
+        computerRect = computer.draw(screen)
+        ballRect = ball.draw(screen)
 
         p_scoreSurf, p_scoreRect = text_objects(str(player.score), score_font, WHITE)
         p_scoreRect.centerx = SW / 2
@@ -76,6 +76,14 @@ def main():
         c_scoreRect.centery = 36
         screen.blit(c_scoreSurf, c_scoreRect)
 
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_w] or keys[pygame.K_UP]:
+            player.update(-1, SCREEN_HEIGHT)
+        if keys[pygame.K_s] or keys[pygame.K_DOWN]:
+            player.update(1, SCREEN_HEIGHT)
+
+        ball.update(SCREEN_HEIGHT)
+
         if state == 'start':
             startSurf, startRect = text_objects('Press ENTER to start', type_font, WHITE)
             startRect.centerx = SW
@@ -85,6 +93,7 @@ def main():
                 if event.key == pygame.K_RETURN:
                     state = 'serve'
         elif state == 'serve':
+            ball.reset()
             if ball.last_score not in [0, 1]:
                 direction = random.choice([-1, 1])
             elif ball.last_score == 0:
@@ -94,7 +103,10 @@ def main():
             ball.serve(direction)
             state = 'play'
         elif state == 'play':
-            
+            if ball.score(SCREEN_WIDTH, player, computer):
+                state = 'start'
+            ball.collide_check(playerRect)
+            ball.collide_check(computerRect)
                         
         pygame.display.update()
         clock.tick(60)
