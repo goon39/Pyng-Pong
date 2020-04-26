@@ -83,6 +83,8 @@ def main():
             player.update(1, SCREEN_HEIGHT)
 
         ball.update(SCREEN_HEIGHT)
+        
+        computer.update(0, SCREEN_HEIGHT, computer=True, ball_pos=ball.last_pos, ball_speed=(ball.dx, ball.dy))
 
         if state == 'start':
             startSurf, startRect = text_objects('Press ENTER to start', type_font, WHITE)
@@ -94,6 +96,8 @@ def main():
                     state = 'serve'
         elif state == 'serve':
             ball.reset()
+            player.reset()
+            computer.reset()
             if ball.last_score not in [0, 1]:
                 direction = random.choice([-1, 1])
             elif ball.last_score == 0:
@@ -104,6 +108,12 @@ def main():
             state = 'play'
         elif state == 'play':
             if ball.score(SCREEN_WIDTH, player, computer):
+                if player.score == 10:
+                    overSurf, overRect = text_objects('Player wins!', type_font, WHITE)
+                    running = False
+                elif computer.score == 10:
+                    overSurf, overRect = text_objects('Computer wins!', type_font, WHITE)
+                    running = False
                 state = 'start'
             ball.collide_check(playerRect)
             ball.collide_check(computerRect)

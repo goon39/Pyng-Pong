@@ -49,7 +49,11 @@ class Ball(object):
     def collide_check(self, paddleRect):
        if self.rect.colliderect(paddleRect):
            self.dx = -1.01 * self.dx
-           self.dy = -self.dy
+           self.dy = 1.01 * self.dy
+           if self.dx > 0:
+               self.x += self.w
+           else:
+               self.x += -self.w
 
 
     def bound(self, screen_height):
