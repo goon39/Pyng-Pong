@@ -8,6 +8,7 @@ Created on Wed Apr 22 12:16:22 2020
 import pygame
 import random
 import sys
+import os
 from Paddle import Paddle
 from Ball import Ball
 
@@ -32,6 +33,8 @@ pygame.mixer.init()
 
 pygame.display.set_caption('Pyng-Pong')
 clock = pygame.time.Clock()
+
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % ((pd.current_w / 2 - SW), (pd.current_h / 2 - SH))
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 #screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)  # TODO: Resizable window
 
@@ -84,7 +87,7 @@ def main():
 
         ball.update(SCREEN_HEIGHT)
         
-        computer.update(0, SCREEN_HEIGHT, computer=True, ball_pos=ball.last_pos, ball_speed=(ball.dx, ball.dy))
+        computer.update(0, SCREEN_HEIGHT, ball=ball)
 
         if state == 'start':
             startSurf, startRect = text_objects('Press ENTER to start', type_font, WHITE)

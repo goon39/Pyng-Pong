@@ -22,7 +22,7 @@ class Ball(object):
         self.h = h
         self.dx = 0
         self.dy = 0
-        self.v = 3
+        self.v = 5
         self.rect = 0
         self.last_pos = ()
         self.last_score = -1
