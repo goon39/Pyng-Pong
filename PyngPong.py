@@ -27,6 +27,7 @@ SH = SCREEN_HEIGHT / 2
 
 type_font = pygame.font.SysFont(None, 48)
 score_font = pygame.font.SysFont(None, 120)
+over_font = pygame.font.SysFont(None, 200)
 
 #TODO: Add sound during movement
 pygame.mixer.init()
@@ -111,15 +112,33 @@ def main():
             state = 'play'
         elif state == 'play':
             if ball.score(SCREEN_WIDTH, player, computer):
-                if player.score == 10:
-                    overSurf, overRect = text_objects('Player wins!', type_font, WHITE)
-                    running = False
-                elif computer.score == 10:
-                    overSurf, overRect = text_objects('Computer wins!', type_font, WHITE)
-                    running = False
-                state = 'start'
-            ball.collide_check(playerRect)
-            ball.collide_check(computerRect)
+                if player.score == 1 or computer.score == 1:
+                    state = 'over'
+                else:
+                    state = 'start'
+                ball.x = -ball.w
+                ball.y = -ball.h
+            else:
+                ball.collide_check(playerRect)
+                ball.collide_check(computerRect)
+        elif state == 'over':
+            if player.score == 10:
+                overSurf, overRect = text_objects('Player wins!', over_font, WHITE)
+            else:
+                overSurf, overRect = text_objects('Computer wins!', over_font, WHITE)
+            overRect.centerx = SW
+            overRect.centery = SH
+            screen.blit(overSurf, overRect)
+            replaySurf, replayRect = text_objects('Press ENTER to replay', type_font, WHITE)
+            replayRect.centerx = SW
+            replayRect.centery = 52
+            screen.blit(replaySurf, replayRect)
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    state = 'start'
+                    player.score = 0
+                    computer.score = 0
+            
                         
         pygame.display.update()
         clock.tick(60)

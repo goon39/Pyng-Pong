@@ -23,7 +23,7 @@ class Paddle(object):
         self.rect = 0
         self.start = (x, y)
         self.frame_counter = 0
-        self.AI_level = 0.9
+        self.AI_level = 0.6
 
     def draw(self, screen):
         self.rect = pygame.draw.rect(screen, WHITE, [self.x, self.y, self.w, self.h])
