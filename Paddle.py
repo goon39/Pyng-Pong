@@ -6,7 +6,6 @@ Created on Tue Apr 21 16:42:15 2020
 """
 
 import pygame
-import time
 import random
 
 WHITE = (255, 255, 255)
@@ -24,6 +23,7 @@ class Paddle(object):
         self.rect = 0
         self.start = (x, y)
         self.frame_counter = 0
+        self.AI_level = 0.9
 
     def draw(self, screen):
         self.rect = pygame.draw.rect(screen, WHITE, [self.x, self.y, self.w, self.h])
@@ -34,9 +34,18 @@ class Paddle(object):
         if not ball:
             self.y += direction * self.dy
         else:
-            self.frame_counter += 1
-            if self.frame_counter == 1:
-                self.frame_counter = 0
+#            self.frame_counter += 1
+#            if self.frame_counter == 1:
+#                self.frame_counter = 0
+#                if ball.dx > 0 and ball.x < self.x:
+#                    if ball.y + ball.h / 2 > self.y + self.h / 2:
+#                        speed = self.dy
+#                    elif ball.y + ball.h / 2 < self.y + self.h / 2:
+#                        speed = -self.dy
+#                    else:
+#                        speed = 0
+#                    self.y += speed
+            if random.random() < self.AI_level:
                 if ball.dx > 0 and ball.x < self.x:
                     if ball.y + ball.h / 2 > self.y + self.h / 2:
                         speed = self.dy
