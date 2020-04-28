@@ -136,6 +136,7 @@ def option_menu():
         screen.blit(optSurf, optRect)
 
         if inputs['Difficulty'] == 'Easy':
+            # TODO: Update button function. Pass msg to inputs dict to update dict.
             button('Green', optRect.x + optRect.w + 10, optRect.y, optRect.w, optRect.h, BLACK, WHITE, 48, itc=GREEN, atc=GREEN)
         else:
             # msg, x, y, w, h, ic, ac, fs, itc=WHITE, atc=BLACK, action=None
