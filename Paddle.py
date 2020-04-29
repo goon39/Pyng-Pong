@@ -9,11 +9,12 @@ import pygame
 import random
 
 WHITE = (255, 255, 255)
+GREEN = (57, 255, 20)
 
 
 class Paddle(object):
 
-    def __init__(self, x, y, w, h):
+    def __init__(self, x, y, w, h, options):
         self.x = x
         self.y = y
         self.w = w
@@ -22,11 +23,19 @@ class Paddle(object):
         self.score = 0
         self.rect = 0
         self.start = (x, y)
-        self.frame_counter = 0
-        self.AI_level = 0.6
+        if options['Difficulty'] == 'Easy':
+            self.AI_level = 0.5
+        elif options['Difficulty'] == 'Hard':
+            self.AI_level = 0.9
+        else:
+            self.AI_level = 0.7
+        if options['Color'] == 'Green':
+            self.color = GREEN
+        else:
+            self.color = WHITE
 
     def draw(self, screen):
-        self.rect = pygame.draw.rect(screen, WHITE, [self.x, self.y, self.w, self.h])
+        self.rect = pygame.draw.rect(screen, self.color, [self.x, self.y, self.w, self.h])
         return self.rect
 
 
@@ -34,17 +43,6 @@ class Paddle(object):
         if not ball:
             self.y += direction * self.dy
         else:
-#            self.frame_counter += 1
-#            if self.frame_counter == 1:
-#                self.frame_counter = 0
-#                if ball.dx > 0 and ball.x < self.x:
-#                    if ball.y + ball.h / 2 > self.y + self.h / 2:
-#                        speed = self.dy
-#                    elif ball.y + ball.h / 2 < self.y + self.h / 2:
-#                        speed = -self.dy
-#                    else:
-#                        speed = 0
-#                    self.y += speed
             if random.random() < self.AI_level:
                 if ball.dx > 0 and ball.x < self.x:
                     if ball.y + ball.h / 2 > self.y + self.h / 2:

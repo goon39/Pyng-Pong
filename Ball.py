@@ -11,11 +11,12 @@ import math
 
 
 WHITE = (255, 255, 255)
+GREEN = (57, 255, 20)
 
 
 class Ball(object):
 
-    def __init__(self, x, y, w, h):
+    def __init__(self, x, y, w, h, options):
         self.x = x
         self.y = y
         self.w = w
@@ -27,10 +28,14 @@ class Ball(object):
         self.last_pos = ()
         self.last_score = -1
         self.start = (x, y)
+        if options['Color'] == 'Green':
+            self.color = GREEN
+        else:
+            self.color = WHITE
 
 
     def draw(self, screen):
-        self.rect = pygame.draw.rect(screen, WHITE, [self.x, self.y, self.w, self.h])
+        self.rect = pygame.draw.rect(screen, self.color, [self.x, self.y, self.w, self.h])
         return self.rect
 
 

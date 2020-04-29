@@ -9,6 +9,7 @@ import pygame
 import random
 import sys
 import os
+import inspect
 from Paddle import Paddle
 from Ball import Ball
 
@@ -57,15 +58,23 @@ def button(msg, x, y, w, h, ic, ac, fs, itc=WHITE, atc=BLACK, action=None):
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
 
-    text = pygame.font.SysFont("Courier", fs, bold=False)
+    text_font = pygame.font.SysFont(None, fs, bold=False)
     if x + w  > mouse[0] > x and y + h > mouse[1] > y:
+        textSurf, textRect = text_objects(msg, text_font, atc)
+        text_w = textSurf.get_width()
+        text_h = textSurf.get_height()
+        #pygame.draw.rect(screen, ac, (x, y, text_w, text_h))
         pygame.draw.rect(screen, ac, (x, y, w, h))
-        textSurf, textRect = text_objects(msg, text, atc)
         if click[0] == 1 and action != None:
-            action()
+            if len(inspect.getfullargspec(action).args) == 1:
+                action(msg)
+            else:
+                action()
     else:
-        pygame.draw.rect(screen, ic, (x, y, w, h))
-        textSurf, textRect = text_objects(msg, text, itc)
+        textSurf, textRect = text_objects(msg, text_font, itc)
+        text_w = textSurf.get_width()
+        text_h = textSurf.get_height()
+        pygame.draw.rect(screen, ic, (x, y, text_w, text_h))
 
     textRect.center = ( (x + (w/2)), (y + (h/2)) )
     screen.blit(textSurf, textRect)
@@ -91,8 +100,8 @@ def start_menu():
         titleRect.centery = SH
         screen.blit(titleSurf, titleRect)
 
-        button('Play', SW, SH + titleRect.getheight()*2, 150, 50, BLACK, WHITE, 48, action=game_loop)
-        button('Options', SW - (150/2), SH + 200, 150, 50, BLACK, WHITE, 48, action=option_menu)
+        button('Play', SW - len('Play') * 24, SH + titleRect.h + 20, len('Play') * 48, 48, BLACK, WHITE, 96, action=game_loop)
+        button('Options', SW - len('Options') * 24, SH + titleRect.h + 100, len('Options') * 48, 48, BLACK, WHITE, 96, action=option_menu)
         pygame.display.update()
         clock.tick(15)
 
@@ -119,58 +128,70 @@ def option_menu():
 
         optSurf, optRect = text_objects('Color', title_font, WHITE)
         optRect.w = 2 * SW / (len(options['Color']) + 1)
-        optRect.centerx = 10
-        optRect.centery = titleRect.bottom_left + 10
+        optRect.x = 10
+        optRect.centery = titleRect.y + titleRect.h + 100
         screen.blit(optSurf, optRect)
 
+        #TODO: Button x positions
         if inputs['Color'] == 'Green':
             button('Green', optRect.x + optRect.w + 10, optRect.y, optRect.w, optRect.h, BLACK, WHITE, 48, itc=GREEN, atc=GREEN)
         else:
             # msg, x, y, w, h, ic, ac, fs, itc=WHITE, atc=BLACK, action=None
-            button('White', optRect.x + optRect.w + 10, optRect.y, optRect.w, optRect.h, BLACK, WHITE, 48)
+            button('White', 2 * (optRect.x + optRect.w + 10), optRect.y, optRect.w, optRect.h, BLACK, WHITE, 48)
 
         optSurf, optRect = text_objects('Difficulty', title_font, WHITE)
         optRect.w = 2 * SW / (len(options['Difficulty']) + 1)
-        optRect.centerx = 10
-        optRect.centery = titleRect.bottom_left + 10
+        optRect.x = 10
+        optRect.centery = 2 * (titleRect.y + titleRect.h + 100)
         screen.blit(optSurf, optRect)
 
         if inputs['Difficulty'] == 'Easy':
-            # TODO: Update button function. Pass msg to inputs dict to update dict.
-            button('Green', optRect.x + optRect.w + 10, optRect.y, optRect.w, optRect.h, BLACK, WHITE, 48, itc=GREEN, atc=GREEN)
+            button('Easy', optRect.x + optRect.w + 10, optRect.y, optRect.w, optRect.h, BLACK, WHITE, 48, action=input_update)
+        elif inputs['Difficulty'] == 'Hard':
+            button('Hard', 2 * (optRect.x + optRect.w + 10), optRect.y, optRect.w, optRect.h, BLACK, WHITE, 48, action=input_update)
         else:
             # msg, x, y, w, h, ic, ac, fs, itc=WHITE, atc=BLACK, action=None
-            button('White', optRect.x + optRect.w + 10, optRect.y, optRect.w, optRect.h, BLACK, WHITE, 48)
+            button('Normal', 3 * (optRect.x + optRect.w + 10), optRect.y, optRect.w, optRect.h, BLACK, WHITE, 48, action=input_update)
+
+        button('Back', SW - 50, optRect.y + optRect.h + 100, 100, 150, BLACK, WHITE, 48, action=start_menu)
         
 
-        for opt, o in enumerate(['Color', 'Difficulty']):
-            optSurf, optRect = text_objects(opt, title_font, WHITE)
-            optRect.w = 2 * SW / (len(options[opt]) + 1)
-            optRect.centerx = 10
-            optRect.centery = (o + 1) * (titleRect.bottom_left) + 10
-            screen.blit(optSurf, optRect)
-            for value, v in enumerate(options[opt]):
-                if value != 'Green':
-                    valueSurf, valueRect = text_objects(value, title_font, WHITE)
-                    button(value, (v + 1) * optRect.w + 10, optRect.y, optRect.w, optRect.h, BLACK, WHITE
-                else:
-                    valueSurf, valueRect = text_objects(value, title_font, GREEN)
-                valueRect.w = optRect.w
-                valueRect.centerx = (v + 1) * optRect.w + 10
-                valueRect.centery = optRect.centery
-                screen.blit(valueSurf, valueRect)
+#        for opt, o in enumerate(['Color', 'Difficulty']):
+#            optSurf, optRect = text_objects(opt, title_font, WHITE)
+#            optRect.w = 2 * SW / (len(options[opt]) + 1)
+#            optRect.centerx = 10
+#            optRect.centery = (o + 1) * (titleRect.bottom_left) + 10
+#            screen.blit(optSurf, optRect)
+#            for value, v in enumerate(options[opt]):
+#                if value != 'Green':
+#                    valueSurf, valueRect = text_objects(value, title_font, WHITE)
+#                    button(value, (v + 1) * optRect.w + 10, optRect.y, optRect.w, optRect.h, BLACK, WHITE
+#                else:
+#                    valueSurf, valueRect = text_objects(value, title_font, GREEN)
+#                valueRect.w = optRect.w
+#                valueRect.centerx = (v + 1) * optRect.w + 10
+#                valueRect.centery = optRect.centery
+#                screen.blit(valueSurf, valueRect)
                 
        # button('Play', SW, SH + titleRect.h * 2, 150, 50, BLACK, WHITE, 48, action=game_loop)
       #  button('Options', SW - (150/2), SH + 200, 150, 50, BLACK, WHITE, 48, action=option_menu)
         pygame.display.update()
-        clock.tick(15)    
+        clock.tick(15)
+
+
+def input_update(value):
+
+    for key in options.keys():
+        if value in options[key]:
+            inputs[key] = value
+                        
 
 
 def game_loop():
 
-    player = Paddle(20, SH - 18, 6, 36)
-    computer = Paddle(SCREEN_WIDTH - 20, SH - 18, 6, 36)
-    ball = Ball(SW, SH, 6, 6)
+    player = Paddle(20, SH - 18, 6, 36, inputs)
+    computer = Paddle(SCREEN_WIDTH - 20, SH - 18, 6, 36, inputs)
+    ball = Ball(SW, SH, 6, 6, inputs)
     
     state = 'start'
     running = True
@@ -264,6 +285,11 @@ def game_loop():
                         
         pygame.display.update()
         clock.tick(60)
+
+
+def main():
+
+    start_menu()
 
 
 if __name__ == "__main__":
