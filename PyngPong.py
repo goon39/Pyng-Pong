@@ -61,10 +61,10 @@ def button(msg, x, y, w, h, ic, ac, fs, itc=WHITE, atc=BLACK, action=None):
     text_font = pygame.font.SysFont(None, fs, bold=False)
     if x + w  > mouse[0] > x and y + h > mouse[1] > y:
         textSurf, textRect = text_objects(msg, text_font, atc)
-        text_w = textSurf.get_width()
+        text_w = textSurf.get_width()  # TODO: Update to textRect.w/h
         text_h = textSurf.get_height()
         #pygame.draw.rect(screen, ac, (x, y, text_w, text_h))
-        pygame.draw.rect(screen, ac, (x, y, w, h))
+       # pygame.draw.rect(screen, ac, (x, y, text_w, text_h))
         if click[0] == 1 and action != None:
             if len(inspect.getfullargspec(action).args) == 1:
                 action(msg)
@@ -74,9 +74,9 @@ def button(msg, x, y, w, h, ic, ac, fs, itc=WHITE, atc=BLACK, action=None):
         textSurf, textRect = text_objects(msg, text_font, itc)
         text_w = textSurf.get_width()
         text_h = textSurf.get_height()
-        pygame.draw.rect(screen, ic, (x, y, text_w, text_h))
+        #pygame.draw.rect(screen, ic, (x, y, text_w, text_h))
 
-    textRect.center = ( (x + (w/2)), (y + (h/2)) )
+    textRect.center = ( (x + (text_w/2)), (y + (text_h/2)) )
     screen.blit(textSurf, textRect)
 
 
@@ -127,33 +127,48 @@ def option_menu():
         screen.blit(titleSurf, titleRect)
 
         optSurf, optRect = text_objects('Color', title_font, WHITE)
-        optRect.w = 2 * SW / (len(options['Color']) + 1)
+        optRect.w = optSurf.get_width()
         optRect.x = 10
         optRect.centery = titleRect.y + titleRect.h + 100
         screen.blit(optSurf, optRect)
+        
+        button_width = (2 * SW - (optRect.w + optRect.x)) / len(options['Color'])
 
-        #TODO: Button x positions
         if inputs['Color'] == 'Green':
-            button('Green', optRect.x + optRect.w + 10, optRect.y, optRect.w, optRect.h, BLACK, WHITE, 48, itc=GREEN, atc=GREEN)
+            button('Green', optRect.x + optRect.w + 10, optRect.y, button_width, optRect.h, BLACK, WHITE, 48, itc=GREEN, atc=GREEN)
         else:
-            # msg, x, y, w, h, ic, ac, fs, itc=WHITE, atc=BLACK, action=None
-            button('White', 2 * (optRect.x + optRect.w + 10), optRect.y, optRect.w, optRect.h, BLACK, WHITE, 48)
+            button('Green', optRect.x + optRect.w + 10, optRect.y, button_width, optRect.h, WHITE, BLACK, 48, itc=GREEN, atc=GREEN)
+
+        if inputs['Color'] == 'White' or not inputs['Color']:
+            button('White', optRect.x + optRect.w + button_width + 20, optRect.y, button_width, optRect.h, BLACK, WHITE, 48, itc=WHITE, atc=BLACK)
+        else:
+            button('White', optRect.x + optRect.w + button_width + 20, optRect.y, button_width, optRect.h, WHITE, BLACK, 48, itc=WHITE, atc=BLACK)       
 
         optSurf, optRect = text_objects('Difficulty', title_font, WHITE)
-        optRect.w = 2 * SW / (len(options['Difficulty']) + 1)
+        optRect.w = optSurf.get_width()
         optRect.x = 10
         optRect.centery = 2 * (titleRect.y + titleRect.h + 100)
         screen.blit(optSurf, optRect)
 
+        button_width = (2 * SW - (optRect.w + optRect.x)) / len(options['Difficulty'])
+
         if inputs['Difficulty'] == 'Easy':
             button('Easy', optRect.x + optRect.w + 10, optRect.y, optRect.w, optRect.h, BLACK, WHITE, 48, action=input_update)
-        elif inputs['Difficulty'] == 'Hard':
-            button('Hard', 2 * (optRect.x + optRect.w + 10), optRect.y, optRect.w, optRect.h, BLACK, WHITE, 48, action=input_update)
         else:
-            # msg, x, y, w, h, ic, ac, fs, itc=WHITE, atc=BLACK, action=None
-            button('Normal', 3 * (optRect.x + optRect.w + 10), optRect.y, optRect.w, optRect.h, BLACK, WHITE, 48, action=input_update)
+            button('Easy', optRect.x + optRect.w + 10, optRect.y, optRect.w, optRect.h, WHITE, BLACK, 48, action=input_update, itc=WHITE, atc=BLACK)
 
-        button('Back', SW - 50, optRect.y + optRect.h + 100, 100, 150, BLACK, WHITE, 48, action=start_menu)
+        if inputs['Difficulty'] == 'Hard':
+            button('Hard', optRect.x + optRect.w + 2 * button_width + 30, optRect.y, optRect.w, optRect.h, BLACK, WHITE, 48, action=input_update)
+        else:
+            button('Hard', optRect.x + optRect.w + 2 * button_width + 30, optRect.y, optRect.w, optRect.h, WHITE, BLACK, 48, action=input_update, itc=WHITE, atc=BLACK)
+
+        if inputs['Difficulty'] == 'Normal' or not inputs['Difficulty']:
+            # msg, x, y, w, h, ic, ac, fs, itc=WHITE, atc=BLACK, action=None
+            button('Normal', optRect.x + optRect.w + button_width + 20, optRect.y, optRect.w, optRect.h, BLACK, WHITE, 48, action=input_update)
+        else:
+            button('Normal', optRect.x + optRect.w + button_width + 20, optRect.y, optRect.w, optRect.h, WHITE, BLACK, 48, action=input_update, itc=WHITE, atc=BLACK)
+
+        button('Back', SW - 50, optRect.y + optRect.h + 50, 100, 50, BLACK, WHITE, 48, action=start_menu)
         
 
 #        for opt, o in enumerate(['Color', 'Difficulty']):
