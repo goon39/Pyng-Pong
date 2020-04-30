@@ -39,8 +39,10 @@ options = {'Color': ['White', 'Green'],
 inputs = {'Color': None,
           'Difficulty': None}
 
-#TODO: Add sound during movement
 pygame.mixer.init()
+paddle_hit = pygame.mixer.Sound(os.path.join('.' , 'sound', 'ball_to_paddle.wav'))
+score_sound = pygame.mixer.Sound(os.path.join('.', 'sound', 'score.wav'))
+wall_hit = pygame.mixer.Sound(os.path.join('.', 'sound', 'ball_to_wall.wav'))
 
 pygame.display.set_caption('Pyng-Pong')
 clock = pygame.time.Clock()
@@ -223,7 +225,10 @@ def game_loop():
         if keys[pygame.K_s] or keys[pygame.K_DOWN]:
             player.update(1, SCREEN_HEIGHT)
 
-        ball.update(SCREEN_HEIGHT)
+        wall_bound = ball.update(SCREEN_HEIGHT)
+        if wall_bound:
+            wall_hit.play()
+            wall_bound = False
         
         computer.update(0, SCREEN_HEIGHT, ball=ball)
 
@@ -256,6 +261,7 @@ def game_loop():
             state = 'play'
         elif state == 'play':
             if ball.score(SCREEN_WIDTH, player, computer):
+                score_sound.play()
                 if player.score == 10 or computer.score == 10:
                     state = 'over'
                 else:
@@ -265,8 +271,15 @@ def game_loop():
                 ball.dx = 0
                 ball.dy = 0
             else:
-                ball.collide_check(playerRect)
-                ball.collide_check(computerRect)
+                collide = ball.collide_check(playerRect)
+                if collide:
+                    paddle_hit.play()
+                    collide = False
+                
+                collide = ball.collide_check(computerRect)
+                if collide:
+                    paddle_hit.play()
+                    collide = False
         elif state == 'over':
             if player.score == 10:
                 if inputs['Color'] == 'Green':

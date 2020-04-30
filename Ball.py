@@ -32,6 +32,12 @@ class Ball(object):
             self.color = GREEN
         else:
             self.color = WHITE
+        if options['Difficulty'] == 'Easy':
+            self.cor = 1.03
+        elif options['Difficulty'] == 'Hard':
+            self.cor = 1.07
+        else:
+            self.cor = 1.05
 
 
     def draw(self, screen):
@@ -43,7 +49,8 @@ class Ball(object):
         self.last_pos = (self.x, self.y)
         self.x += self.dx
         self.y += self.dy
-        self.bound(screen_height)
+        wall = self.bound(screen_height)
+        return wall
 
 
     def reset(self):
@@ -52,32 +59,30 @@ class Ball(object):
         
 
     def collide_check(self, paddleRect):
-#       if self.rect.colliderect(paddleRect):
-#           self.dx = -1.01 * self.dx
-#           self.dy = 1.01 * self.dy
-#           if self.dx > 0:
-#               self.x += self.w
-#           else:
-#               self.x += -self.w
         if (self.y < paddleRect.y + paddleRect.h) and (self.y + self.h > paddleRect.y):
             if (paddleRect.x < self.x < paddleRect.x + paddleRect.w):
-                self.dx = -1.01 * self.dx
-                self.dy = 1.01 * self.dy
+                self.dx = -self.cor * self.dx
+                self.dy = self.cor * self.dy
                 if self.dx > 0:
                     self.x += self.w
                 else:
                     self.x += -self.w
+                return True
+        else:
+            return False
 
 
     def bound(self, screen_height):
         if self.y < 0:
             self.y = 0
             self.dy = -self.dy
-            # TODO: math for bouncing off walls
-        if self.y + self.h > screen_height:
+            return True
+        elif self.y + self.h > screen_height:
             self.y = screen_height - self.h
             self.dy = -self.dy
-            # TODO: math for bouncing off wall
+            return True
+        else:
+            return False
 
 
     def score(self, screen_width, paddle1, paddle2):
@@ -98,4 +103,3 @@ class Ball(object):
         angle = random.randrange(-45, 45)
         self.dx = direction * self.v * abs(math.cos(math.radians(angle)))
         self.dy = direction * self.v * abs(math.sin(math.radians(angle)))
-        return None
