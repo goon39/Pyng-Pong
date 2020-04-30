@@ -24,11 +24,11 @@ class Paddle(object):
         self.rect = 0
         self.start = (x, y)
         if options['Difficulty'] == 'Easy':
-            self.AI_level = 0.5
+            self.AI_level = 0.4
         elif options['Difficulty'] == 'Hard':
-            self.AI_level = 0.9
+            self.AI_level = 0.8
         else:
-            self.AI_level = 0.7
+            self.AI_level = 0.6
         if options['Color'] == 'Green':
             self.color = GREEN
         else:

@@ -49,6 +49,7 @@ os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % ((pd.current_w / 2 - SW), (pd.cur
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 #screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)  # TODO: Resizable window
 
+
 def text_objects(text, font_obj, color, antialias=True):
     textSurf = font_obj.render(text, antialias, color)
     return textSurf, textSurf.get_rect()
@@ -61,8 +62,8 @@ def button(msg, x, y, w, h, ic, ac, fs, itc=WHITE, atc=BLACK, action=None):
     text_font = pygame.font.SysFont(None, fs, bold=False)
     if x + w  > mouse[0] > x and y + h > mouse[1] > y:
         textSurf, textRect = text_objects(msg, text_font, atc)
-        text_w = textRect.w  # TODO: Update to textRect.w/h
-        text_h = textRect.h
+        #text_w = textRect.w
+        #text_h = textRect.h
         pygame.draw.rect(screen, ac, (x, y, w, h))
         #pygame.draw.rect(screen, ac, (x, y, text_w, text_h))
         if click[0] == 1 and action != None:
@@ -72,8 +73,8 @@ def button(msg, x, y, w, h, ic, ac, fs, itc=WHITE, atc=BLACK, action=None):
                 action()
     else:
         textSurf, textRect = text_objects(msg, text_font, itc)
-        text_w = textRect.w
-        text_h = textRect.h
+        #text_w = textRect.w
+        #text_h = textRect.h
         pygame.draw.rect(screen, ic, (x, y, w, h))
         #pygame.draw.rect(screen, ic, (x, y, text_w, text_h))
 
@@ -85,16 +86,8 @@ def start_menu():
 
     start = True
     while start:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                start = False
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    start = False
-                    pygame.quit()
-                    sys.exit()
+        start = game_exit()
+
         screen.fill(BLACK)
         titleSurf, titleRect = text_objects('PONG!', title_font, WHITE)
         titleRect.centerx = SW
@@ -104,23 +97,15 @@ def start_menu():
         button('Play', SW - len('Play') * 24, SH + titleRect.h + 20, len('Play') * 48, 48, BLACK, WHITE, 96, action=game_loop)
         button('Options', SW - len('Options') * 24, SH + titleRect.h + 100, len('Options') * 48, 48, BLACK, WHITE, 96, action=option_menu)
         pygame.display.update()
-        clock.tick(15)
+        clock.tick(60)
 
 
 def option_menu():
 
     menu = True
     while menu:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                menu = False
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    menu = False
-                    pygame.quit()
-                    sys.exit()
+        menu = game_exit()
+
         screen.fill(BLACK)
         titleSurf, titleRect = text_objects('Options', title_font, WHITE)
         titleRect.centerx = SW
@@ -181,8 +166,23 @@ def input_update(value):
     for key in options.keys():
         if value in options[key]:
             inputs[key] = value
-            print(key + ' ' + value)
-                        
+
+
+def game_exit():
+
+    opt=True
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            opt = False
+            pygame.quit()
+            sys.exit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                opt = False
+                pygame.quit()
+                sys.exit()
+    return opt
+
 
 def game_loop():
 
@@ -193,16 +193,7 @@ def game_loop():
     state = 'start'
     running = True
     while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    running = False
-                    pygame.quit()
-                    sys.exit()
+        running = game_exit()
 
         screen.fill(BLACK)
 
@@ -210,12 +201,18 @@ def game_loop():
         computerRect = computer.draw(screen)
         ballRect = ball.draw(screen)
 
-        p_scoreSurf, p_scoreRect = text_objects(str(player.score), score_font, WHITE)
+        if inputs['Color'] == 'Green':
+            p_scoreSurf, p_scoreRect = text_objects(str(player.score), score_font, GREEN)
+        else:
+            p_scoreSurf, p_scoreRect = text_objects(str(player.score), score_font, WHITE)
         p_scoreRect.centerx = SW / 2
         p_scoreRect.centery = 36
         screen.blit(p_scoreSurf, p_scoreRect)
 
-        c_scoreSurf, c_scoreRect = text_objects(str(computer.score), score_font, WHITE)
+        if inputs['Color'] == 'Green':
+            c_scoreSurf, c_scoreRect = text_objects(str(computer.score), score_font, GREEN)
+        else:
+            c_scoreSurf, c_scoreRect = text_objects(str(computer.score), score_font, WHITE)
         c_scoreRect.centerx = 0.75 * SCREEN_WIDTH
         c_scoreRect.centery = 36
         screen.blit(c_scoreSurf, c_scoreRect)
@@ -231,13 +228,20 @@ def game_loop():
         computer.update(0, SCREEN_HEIGHT, ball=ball)
 
         if state == 'start':
-            startSurf, startRect = text_objects('Press ENTER to start', type_font, WHITE)
+            if inputs['Color'] == 'Green':
+                startSurf, startRect = text_objects('Press ENTER to start', type_font, GREEN)
+            else:
+                startSurf, startRect = text_objects('Press ENTER to start', type_font, WHITE)
             startRect.centerx = SW
             startRect.centery = 52
             screen.blit(startSurf, startRect)
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    state = 'serve'
+
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_RETURN]:
+                state = 'serve'
+#            if event.type == pygame.KEYDOWN:
+#                if event.key == pygame.K_RETURN:
+#                    state = 'serve'
         elif state == 'serve':
             ball.reset()
             player.reset()
@@ -252,34 +256,51 @@ def game_loop():
             state = 'play'
         elif state == 'play':
             if ball.score(SCREEN_WIDTH, player, computer):
-                if player.score == 1 or computer.score == 1:
+                if player.score == 10 or computer.score == 10:
                     state = 'over'
                 else:
                     state = 'start'
                 ball.x = -ball.w
                 ball.y = -ball.h
+                ball.dx = 0
+                ball.dy = 0
             else:
                 ball.collide_check(playerRect)
                 ball.collide_check(computerRect)
         elif state == 'over':
             if player.score == 10:
-                overSurf, overRect = text_objects('Player wins!', over_font, WHITE)
-            else:
-                overSurf, overRect = text_objects('Computer wins!', over_font, WHITE)
+                if inputs['Color'] == 'Green':
+                    overSurf, overRect = text_objects('Player wins!', over_font, GREEN)
+                else:
+                    overSurf, overRect = text_objects('Player wins!', over_font, WHITE)
+            elif computer.score == 10:
+                if inputs['Color'] == 'Green':
+                    overSurf, overRect = text_objects('Computer wins!', over_font, GREEN)
+                else:
+                    overSurf, overRect = text_objects('Computer wins!', over_font, WHITE)
             overRect.centerx = SW
             overRect.centery = SH
             screen.blit(overSurf, overRect)
-            replaySurf, replayRect = text_objects('Press ENTER to replay', type_font, WHITE)
+            
+            if inputs['Color'] == 'Green':
+                replaySurf, replayRect = text_objects('Press ENTER to replay', type_font, GREEN)
+            else:
+                replaySurf, replayRect = text_objects('Press ENTER to replay', type_font, WHITE)
             replayRect.centerx = SW
             replayRect.centery = 52
             screen.blit(replaySurf, replayRect)
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    state = 'start'
-                    player.score = 0
-                    computer.score = 0
-            
-                        
+
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_RETURN]:
+                state = 'start'
+                player.score = 0
+                computer.score = 0
+#            if event.type == pygame.KEYDOWN:
+#                if event.key == pygame.K_RETURN:
+#                    state = 'start'
+#                    player.score = 0
+#                    computer.score = 0
+                                 
         pygame.display.update()
         clock.tick(60)
 
