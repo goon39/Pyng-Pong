@@ -19,7 +19,6 @@ BLACK = (0, 0, 0)
 GREEN = (57, 255, 20)
 
 pygame.init()
-pygame.font.init()
 
 pd = pygame.display.Info()
 SCREEN_WIDTH = pd.current_w - 200
