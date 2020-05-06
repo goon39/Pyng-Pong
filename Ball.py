@@ -10,7 +10,7 @@ import random
 import math
 
 
-WHITE = (255, 255, 255)
+WHITE = (255, 255, 255, 0)
 GREEN = (57, 255, 20)
 
 
@@ -21,7 +21,7 @@ class Ball(object):
         #self.y = y
         #self.w = w
         #self.h = h
-        self.rect = pygame.Rect(self.x, self.y, self.w, self.h)
+        self.rect = pygame.Rect(rect)
         self.center = pygame.Vector2(self.rect.center)
         self.vector = pygame.Vector2()
        # self.dx = 0
@@ -31,19 +31,17 @@ class Ball(object):
         self.last_pos = ()
         self.last_score = -1
         self.start = self.rect.center
+        self.speed = 10
         if options['Color'] == 'Green':
-            self.color = pygame.Color(GREEN)
+            self.color = pygame.Color('#00ff00')
         else:
-            self.color = pygame.Color(WHITE)
+            self.color = pygame.Color('#ffffff')
         if options['Difficulty'] == 'Easy':
-            #self.cor = 1.03
-            self.speed = 10
+            self.cor = 1.03
         elif options['Difficulty'] == 'Hard':
-            #self.cor = 1.07
-            self.speed = 50
+            self.cor = 1.07
         else:
-            #self.cor = 1.05
-            self.speed = 30
+            self.cor = 1.05
 
 
     def draw(self, screen):
@@ -89,7 +87,7 @@ class Ball(object):
             else:
                 self.rect.right = paddleRect.left
             self.center.x = self.rect.centerx
-            self.vector = (pygame.Vector2(self.rect.center) - paddleRect.center).normalize()
+            self.vector = self.cor * (pygame.Vector2(self.rect.center) - paddleRect.center).normalize()
             return True
         else:
             return False
@@ -106,7 +104,8 @@ class Ball(object):
 #            return True
 #        else:
 #            return False
-        rect = border.inflate(100, 0)
+        border_rect = pygame.Rect(border)
+        rect = border_rect.inflate(100, 0)
         clamp = self.rect.clamp(rect)
 
         if clamp.y != self.rect.y:
@@ -118,7 +117,7 @@ class Ball(object):
             return False
 
 
-    def score(self, screen_width, paddle1, paddle2):
+    def score(self, paddle1, paddle2):
 #        if self.x <= 0:
 #            paddle2.score_update()
 #            self.last_score = 0
