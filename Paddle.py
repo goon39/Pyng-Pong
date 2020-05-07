@@ -39,7 +39,8 @@ class Paddle(object):
 
 
     def draw(self, screen):
-        screen.fill(self.color, self.rect)
+        #screen.fill(self.color, rect=self.rect)
+        pygame.draw.rect(screen, self.color, self.rect)
 
 
     def update(self, direction, border, delta, ball=None):

@@ -93,7 +93,7 @@ def start_menu():
 
         screen.fill(BLACK)
 
-        print_to_screen(screen, 'PONG!', title_font, SW, SH)
+        print_to_screen('PONG!', title_font, SW, SH, color=WHITE)
 
         button('Play', SW - len('Play') * 24, SH + 100, len('Play') * 48, 48, BLACK, WHITE, 96, action=game_loop)
         button('Options', SW - len('Options') * 24, SH + 180, len('Options') * 48, 48, BLACK, WHITE, 96, action=option_menu)
@@ -110,10 +110,10 @@ def option_menu():
         screen.fill(BLACK)
 
         opt_width, opt_height = title_font.size('Options')
-        print_to_screen(screen, 'Options', title_font, SW, 100, color=WHITE)
+        print_to_screen('Options', title_font, SW, 100, color=WHITE)
 
         color_width, color_height = title_font.size('Color')
-        print_to_screen(screen, 'Color', title_font, 10 + color_width / 2, opt_height + 100, color=WHITE)
+        print_to_screen('Color', title_font, 10 + color_width / 2, opt_height + 100, color=WHITE)
 
         button_width = (2 * SW - (60 + color_width)) / len(options['Color'])
 
@@ -132,7 +132,7 @@ def option_menu():
             button('White', 2 * color_width + 10, opt_height + 100, button_width, color_height, BLACK, WHITE, 48, itc=WHITE, atc=BLACK, action=input_update)
 
         diff_width, diff_height = title_font.size('Difficulty')
-        print_to_screen(screen, 'Difficulty', title_font, 10 + diff_width / 2, opt_height + color_height + 200, color=WHITE)
+        print_to_screen('Difficulty', title_font, 10 + diff_width / 2, opt_height + color_height + 200, color=WHITE)
 
         button_width = (2 * SW - (80 + diff_width)) / len(options['Difficulty'])
 
@@ -159,7 +159,7 @@ def option_menu():
 
 
         #button('Back', SW - 50, optRect.y + optRect.h + 50, 100, 50, BLACK, WHITE, 48, action=start_menu)
-        back_width, back_height = pygame.font.SysFont(None, 48).size()
+        back_width, back_height = pygame.font.SysFont(None, 48).size('Back')
         button('Back', SW - back_width / 2, SCREEN_HEIGHT - back_height - 10, back_width, back_height, BLACK, WHITE, 48, action=start_menu)
         
         pygame.display.update()
@@ -189,30 +189,11 @@ def game_exit():
     return opt
 
 
-#def print_score(player, computer, screen):
-#
-#    if inputs['Color'] == 'Green':
-#        p_scoreSurf, p_scoreRect = text_objects(str(player.score), score_font, GREEN)
-#    else:
-#        p_scoreSurf, p_scoreRect = text_objects(str(player.score), score_font, WHITE)
-#    p_scoreRect.centerx = SW / 2
-#    p_scoreRect.centery = 36
-#    screen.blit(p_scoreSurf, p_scoreRect)
-#
-#    if inputs['Color'] == 'Green':
-#        c_scoreSurf, c_scoreRect = text_objects(str(computer.score), score_font, GREEN)
-#    else:
-#        c_scoreSurf, c_scoreRect = text_objects(str(computer.score), score_font, WHITE)
-#    c_scoreRect.centerx = 0.75 * SCREEN_WIDTH
-#    c_scoreRect.centery = 36
-#    screen.blit(c_scoreSurf, c_scoreRect)
-
-
-def print_to_screen(screen, msg, font, cx, cy, color=None):
+def print_to_screen(msg, font, cx, cy, color=None):
 
     if not color:
-        if inputs['Color']:
-            mySurf, myRect = text_objects(msg, font, inputs['Color'])
+        if inputs['Color'] == 'Green':
+            mySurf, myRect = text_objects(msg, font, GREEN)
         else:
             mySurf, myRect = text_objects(msg, font, WHITE)
     else:
@@ -221,7 +202,7 @@ def print_to_screen(screen, msg, font, cx, cy, color=None):
     screen.blit(mySurf, myRect)
 
 
-def update_and_draw(screen, player, computer, ball, keys):
+def update_and_draw(player, computer, ball, keys):
 
     player.draw(screen)
     computer.draw(screen)
@@ -240,9 +221,9 @@ def update_and_draw(screen, player, computer, ball, keys):
     computer.update(0, (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT), delta, ball=ball)
     
 
-def start_state(screen, keys):
+def start_state(keys):
 
-    print_to_screen(screen, 'Press ENTER to start', type_font, SW, 52)
+    print_to_screen('Press ENTER to start', type_font, SW, 52)
 
     if keys[pygame.K_RETURN]:
         state = 'serve'
@@ -322,13 +303,13 @@ def game_loop():
 
         keys = pygame.key.get_pressed()
 
-        update_and_draw(screen, player, computer, ball, keys)
+        update_and_draw(player, computer, ball, keys)
 
-        print_to_screen(screen, str(player.score), score_font, SW/2, 36)
-        print_to_screen(screen, str(computer.score), score_font, 0.75*SCREEN_WIDTH, 36)
+        print_to_screen(str(player.score), score_font, SW/2, 36)
+        print_to_screen(str(computer.score), score_font, 0.75*SCREEN_WIDTH, 36)
 
         if state == 'start':
-            state = start_state(screen, keys)
+            state = start_state(keys)
         elif state == 'serve':
             state = serve_state(ball, player, computer)
         elif state == 'play':
@@ -336,8 +317,8 @@ def game_loop():
         elif state == 'over':
             over_state(ball, player, computer, keys)
 
-        #pygame.display.update()
-        pygame.display.flip()
+        pygame.display.update()
+        #pygame.display.flip()
         clock.tick(60)
 
 
