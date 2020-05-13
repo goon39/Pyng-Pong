@@ -31,7 +31,7 @@ class Ball(object):
         self.last_pos = ()
         self.last_score = -1
         self.start = self.rect.center
-        self.speed = 10
+        self.speed = 6
         if options['Color'] == 'Green':
             self.color = pygame.Color('#00ff00')
         else:
@@ -58,6 +58,12 @@ class Ball(object):
 #        wall = self.bound(screen_height)
 #        return wall
         self.center += self.vector * self.speed * delta
+        #self.rect.x += self.vector.x * self.speed * delta
+        #self.rect.y += self.vector.y * self.speed * delta
+        v = self.vector * self.speed * delta
+        self.rect.move_ip(v)
+        print(self.rect)
+        #self.rect = pygame.Rect((self.center.x - self.rect.w, self.center.y - self.rect.h, self.rect.w, self.rect.h))
         wall = self.bound(border)
         return wall
 
@@ -116,6 +122,16 @@ class Ball(object):
             return True
         else:
             return False
+#        border_rect = pygame.Rect(border)
+#        rect = border_rect.inflate(100, 0)
+#        if not rect.contains(self.rect):
+#            clamp = self.rect.clamp(rect)
+#            self.center = pygame.Vector2(clamp.center)
+#            self.vector.y = -self.vector.y
+#            self.rect = clamp
+#            return True
+#        else:
+#            return False
 
 
     def score(self, paddle1, paddle2):
@@ -147,8 +163,8 @@ class Ball(object):
 #        self.dx = direction * self.v * abs(math.cos(math.radians(angle)))
 #        self.dy = direction * self.v * abs(math.sin(math.radians(angle)))
         if direction < 0:
-            angle = random.randint(-135, -45)
+            angle = random.randint(135, 245)
         else:
-            angle = random.randint(45, 135)
-        self.vector.from_polar((1, angle))
+            angle = random.randint(-45, 45)
+        self.vector.from_polar((1, math.radians(angle)))
         

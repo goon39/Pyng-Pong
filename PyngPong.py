@@ -292,7 +292,7 @@ def game_loop():
 
     player = Paddle((20, SH - 18, 6, 36), inputs)
     computer = Paddle((SCREEN_WIDTH - 20, SH - 18, 6, 36), inputs)
-    ball = Ball((SW -3, SH -3, 6, 6), inputs)
+    ball = Ball((SW - 3, SH - 3, 6, 6), inputs)
     
     state = 'start'
     running = True
