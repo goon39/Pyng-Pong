@@ -31,7 +31,7 @@ class Ball(object):
         self.last_pos = ()
         self.last_score = -1
         self.start = self.rect.center
-        self.speed = 6
+        self.speed = 40
         if options['Color'] == 'Green':
             self.color = pygame.Color('#00ff00')
         else:
@@ -57,13 +57,9 @@ class Ball(object):
 #        self.y += self.dy
 #        wall = self.bound(screen_height)
 #        return wall
-        self.center += self.vector * self.speed * delta
-        #self.rect.x += self.vector.x * self.speed * delta
-        #self.rect.y += self.vector.y * self.speed * delta
         v = self.vector * self.speed * delta
         self.rect.move_ip(v)
-        print(self.rect)
-        #self.rect = pygame.Rect((self.center.x - self.rect.w, self.center.y - self.rect.h, self.rect.w, self.rect.h))
+        self.center += v
         wall = self.bound(border)
         return wall
 
@@ -94,6 +90,7 @@ class Ball(object):
             else:
                 self.rect.right = paddle.rect.left
             self.center.x = self.rect.centerx
+            # Vector = Vector at center of ball - 
             self.vector = self.cor * (pygame.Vector2(self.rect.center) - paddle.rect.center).normalize()
             return True
         else:

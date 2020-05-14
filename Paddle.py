@@ -25,7 +25,7 @@ class Paddle(object):
         self.vector = pygame.Vector2((0, 1))
         self.score = 0
         self.start = self.rect.center
-        self.paddle_speed = 18
+        self.paddle_speed = 25
         if options['Difficulty'] == 'Easy':
             self.AI_level = 0.8
         elif options['Difficulty'] == 'Hard':
@@ -59,7 +59,9 @@ class Paddle(object):
 #        self.bound(screen_height)
         if not ball:
             self.vector = pygame.Vector2((0, direction))
-            self.center += self.vector * delta * self.paddle_speed
+            v = self.vector * delta * self.paddle_speed
+            self.center += v
+            self.rect.move_ip(v)
         else:
             if ball.vector.x > 0 and ball.rect.x < self.rect.x:
                 if ball.rect.centery > self.rect.centery:
@@ -68,7 +70,9 @@ class Paddle(object):
                     speed = -1 * self.AI_level * self.paddle_speed
                 else:
                     speed = 0
-                self.center += self.vector * speed * delta
+                v = self.vector * speed * delta
+                self.center += v
+                self.rect.move_ip(v)
         self.bound(border)
 
 
