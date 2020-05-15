@@ -31,7 +31,7 @@ class Ball(object):
         self.last_pos = ()
         self.last_score = -1
         self.start = self.rect.center
-        self.speed = 40
+        self.speed = 30
         if options['Color'] == 'Green':
             self.color = pygame.Color('#00ff00')
         else:
@@ -114,7 +114,7 @@ class Ball(object):
 
         if clamp.y != self.rect.y:
             self.center = pygame.Vector2(clamp.center)
-            self.vector.y -= self.vector.y
+            self.vector.y = -self.vector.y
             self.rect = clamp
             return True
         else:
@@ -145,10 +145,14 @@ class Ball(object):
         if self.rect.right < paddle1.rect.left:
             paddle2.score_update()
             self.last_score = 0
+            self.vector = pygame.Vector2()
+            self.rect.right = 0
             return True
         elif self.rect.left > paddle2.rect.right:
             paddle1.score_update()
             self.last_score = 1
+            self.vector = pygame.Vector2()
+            self.rect.left = paddle2.rect.right + paddle1.rect.left
             return True
         else:
             return False
@@ -160,8 +164,8 @@ class Ball(object):
 #        self.dx = direction * self.v * abs(math.cos(math.radians(angle)))
 #        self.dy = direction * self.v * abs(math.sin(math.radians(angle)))
         if direction < 0:
-            angle = random.randint(135, 245)
+            angle_range = list(range(135, 175)) + list(range(185, 245))
         else:
-            angle = random.randint(-45, 45)
-        self.vector.from_polar((1, math.radians(angle)))
-        
+            angle_range = list(range(-45, -5)) + list(range(5, 45))
+        angle = random.choice(angle_range)
+        self.vector.from_polar((1, angle))

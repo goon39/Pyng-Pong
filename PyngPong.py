@@ -113,49 +113,60 @@ def option_menu():
         print_to_screen('Options', title_font, SW, 100, color=WHITE)
 
         color_width, color_height = title_font.size('Color')
-        print_to_screen('Color', title_font, 10 + color_width / 2, opt_height + 100, color=WHITE)
+        print_to_screen('Color', title_font, 10 + color_width / 2, opt_height + 150, color=WHITE)
 
         button_width = (2 * SW - (60 + color_width)) / len(options['Color'])
 
+        bx = 20 + color_width
+        by = opt_height + 150 - color_height / 2
+        bw = button_width
+        bh = color_height
         if inputs['Color'] == 'Green':
             #button('Green', optRect.x + optRect.w + 10, optRect.y, button_width, optRect.h, WHITE, BLACK, 48, itc=GREEN, atc=GREEN, action=input_update)
-            button('Green', 20 + color_width, opt_height + 100, button_width, color_height, WHITE, BLACK, 48, itc=GREEN, atc=GREEN, action=input_update)
+            button('Green', bx, by, bw, bh, WHITE, BLACK, 48, itc=GREEN, atc=GREEN, action=input_update)
         else:
             #button('Green', optRect.x + optRect.w + 10, optRect.y, button_width, optRect.h, BLACK, WHITE, 48, itc=GREEN, atc=GREEN, action=input_update)
-            button('Green', 20 + color_width, opt_height + 100, button_width, color_height, BLACK, WHITE, 48, itc=GREEN, atc=GREEN, action=input_update)
+            button('Green', bx, by, bw, bh, BLACK, WHITE, 48, itc=GREEN, atc=GREEN, action=input_update)
 
+        bx += button_width + 10
         if inputs['Color'] == 'White' or not inputs['Color']:
             #button('White', optRect.x + optRect.w + button_width + 20, optRect.y, button_width, optRect.h, WHITE, BLACK, 48, itc=BLACK, atc=WHITE, action=input_update)
-            button('White', 2 * color_width + 10, opt_height + 100, button_width, color_height, WHITE, BLACK, 48, itc=BLACK, atc=WHITE, action=input_update)
+            button('White', bx, by, bw, bh, WHITE, BLACK, 48, itc=BLACK, atc=WHITE, action=input_update)
         else:
             #button('White', optRect.x + optRect.w + button_width + 20, optRect.y, button_width, optRect.h, BLACK, WHITE, 48, itc=WHITE, atc=BLACK, action=input_update)
-            button('White', 2 * color_width + 10, opt_height + 100, button_width, color_height, BLACK, WHITE, 48, itc=WHITE, atc=BLACK, action=input_update)
+            button('White', bx, by, bw, bh, BLACK, WHITE, 48, itc=WHITE, atc=BLACK, action=input_update)
 
         diff_width, diff_height = title_font.size('Difficulty')
         print_to_screen('Difficulty', title_font, 10 + diff_width / 2, opt_height + color_height + 200, color=WHITE)
 
         button_width = (2 * SW - (80 + diff_width)) / len(options['Difficulty'])
 
+        bx = 20 + diff_width
+        by = opt_height + color_height + 200 - diff_height / 2
+        bw = button_width
+        bh = diff_height
         if inputs['Difficulty'] == 'Easy':
             #button('Easy', optRect.x + optRect.w + 10, optRect.y, button_width, optRect.h, WHITE, BLACK, 48, action=input_update, itc=BLACK, atc=WHITE)
-            button('Easy', 20 + diff_width, opt_height + color_height + 200, button_width, diff_height, WHITE, BLACK, 48, action=input_update, itc=BLACK, atc=WHITE)
+            button('Easy', bx, by, bw, bh, WHITE, BLACK, 48, action=input_update, itc=BLACK, atc=WHITE)
         else:
             #button('Easy', optRect.x + optRect.w + 10, optRect.y, button_width, optRect.h, BLACK, WHITE, 48, action=input_update, itc=WHITE, atc=BLACK)
-            button('Easy', 20 + diff_width, opt_height + color_height + 200, button_width, diff_height, BLACK, WHITE, 48, action=input_update, itc=WHITE, atc=BLACK)
+            button('Easy', bx, by, bw, bh, BLACK, WHITE, 48, action=input_update, itc=WHITE, atc=BLACK)
 
+        bx += button_width + 10
         if inputs['Difficulty'] == 'Normal' or not inputs['Difficulty']:
             #button('Normal', optRect.x + optRect.w + button_width + 20, optRect.y, button_width, optRect.h, WHITE, BLACK, 48, action=input_update, itc=BLACK, atc=WHITE)
-            button('Normal', 30 + diff_width + button_width, opt_height + color_height + 200, button_width, diff_height, WHITE, BLACK, 48, action=input_update, itc=BLACK, atc=WHITE)
+            button('Normal', bx, by, bw, bh, WHITE, BLACK, 48, action=input_update, itc=BLACK, atc=WHITE)
         else:
             #button('Normal', optRect.x + optRect.w + button_width + 20, optRect.y, button_width, optRect.h, BLACK, WHITE, 48, action=input_update, itc=WHITE, atc=BLACK)
-            button('Normal', 30 + diff_width + button_width, opt_height + color_height + 200, button_width, diff_height, BLACK, WHITE, 48, action=input_update, itc=WHITE, atc=BLACK)
+            button('Normal', bx, by, bw, bh, BLACK, WHITE, 48, action=input_update, itc=WHITE, atc=BLACK)
 
+        bx += button_width + 10
         if inputs['Difficulty'] == 'Hard':
             #button('Hard', optRect.x + optRect.w + 2 * button_width + 30, optRect.y, button_width, optRect.h, WHITE, BLACK, 48, action=input_update, itc=BLACK, atc=WHITE)
-            button('Hard', 40 + diff_width + 2 * button_width, opt_height + color_height + 200, button_width, diff_height, WHITE, BLACK, 48, action=input_update, itc=BLACK, atc=WHITE)
+            button('Hard', bx, by, bw, bh, WHITE, BLACK, 48, action=input_update, itc=BLACK, atc=WHITE)
         else:
             #button('Hard', optRect.x + optRect.w + 2 * button_width + 30, optRect.y, button_width, optRect.h, BLACK, WHITE, 48, action=input_update, itc=WHITE, atc=BLACK)
-            button('Hard', 40 + diff_width + 2 * button_width, opt_height + color_height + 200, button_width, diff_height, BLACK, WHITE, 48, action=input_update, itc=WHITE, atc=BLACK)
+            button('Hard', bx, by, bw, bh, BLACK, WHITE, 48, action=input_update, itc=WHITE, atc=BLACK)
 
 
         #button('Back', SW - 50, optRect.y + optRect.h + 50, 100, 50, BLACK, WHITE, 48, action=start_menu)
@@ -275,11 +286,11 @@ def over_state(ball, player, computer, keys):
 
     state = 'over'
     if player.score == 10:
-        print_to_screen(screen, 'Player wins!', over_font, SW, SH)
+        print_to_screen('Player wins!', over_font, SW, SH)
     elif computer.score == 10:
-        print_to_screen(screen, 'Computer wins!', over_font, SW, SH)
+        print_to_screen('Computer wins!', over_font, SW, SH)
 
-    print_to_screen(screen, 'Press ENTER to replay', type_font, SW, 52)
+    print_to_screen('Press ENTER to replay', type_font, SW, 52)
 
     if keys[pygame.K_RETURN]:
         state = 'start'
@@ -313,9 +324,9 @@ def game_loop():
         elif state == 'serve':
             state = serve_state(ball, player, computer)
         elif state == 'play':
-            play_state(ball, player, computer)
+            state = play_state(ball, player, computer)
         elif state == 'over':
-            over_state(ball, player, computer, keys)
+            state = over_state(ball, player, computer, keys)
 
         pygame.display.update()
         #pygame.display.flip()
